@@ -14,6 +14,7 @@ export default function Login() {
 
     const errors = {}
 
+    //client side validation
     const validateErrors = () => {
         if (!formData.email) {
             errors.email = 'required'
@@ -23,6 +24,7 @@ export default function Login() {
         }
     }
 
+    //handle login submit button
     const handleSubmit = async (e) => {
         e.preventDefault()
         validateErrors()
@@ -30,6 +32,7 @@ export default function Login() {
             setFormErrors({})
             try {
                 const response = await axios.post("http://localhost:3090/api/users-login", formData)
+                alert('Successfull Login')
                 {
                     localStorage.setItem("token", response.data.token)
                 }
@@ -44,6 +47,7 @@ export default function Login() {
         }
     }
 
+    //to handle user input
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }

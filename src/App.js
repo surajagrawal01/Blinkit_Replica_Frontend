@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import HomePage from "./Components/HomePage";
 import Login from "./Components/Login";
 import NavbarComponent from "./Components/Nav";
@@ -5,7 +6,6 @@ import { Routes, Route } from "react-router-dom"
 import Registration from "./Components/Registration";
 import { useSelector, useDispatch } from "react-redux";
 import { RotatingLines } from "react-loader-spinner";
-import { useEffect, useState } from "react";
 import { startSetUser } from "./actions/userAction";
 import Cart from "./Components/Cart";
 import axios from "axios"
@@ -62,7 +62,7 @@ export default function App() {
                 visible={true}
                 height="96"
                 width="96"
-                strokeColor="#7758A6"
+                strokeColor="blue"
                 strokeWidth="5"
                 animationDuration="0.75"
                 ariaLabel="rotating-lines-loading"

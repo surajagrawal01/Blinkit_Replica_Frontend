@@ -49,12 +49,12 @@ export default function ProductCoursel({ products, category }) {
 
     const handleButton = (product) => {
         let item = undefined
-        if(cartItems){
-             item = cartItems.find((ele) => ele.productId === product._id)
+        if (cartItems) {
+            item = cartItems.find((ele) => ele.productId === product._id)
         }
 
-        const handleClick = ()=>{
-            if(!localStorage.getItem('token')){
+        const handleClick = () => {
+            if (!localStorage.getItem('token')) {
                 navigate("/login")
                 return;
             }
@@ -64,10 +64,10 @@ export default function ProductCoursel({ products, category }) {
         if (item) {
             return (
                 <>
-                    <button className='btn btn-primary p-2' onClick={()=> dispatch(startChangeItem(product._id, 'dec'))} disabled={item.quantity === 1}>-</button>
-                    {item.quantity}
-                    <button className='btn btn-primary p-2' onClick={()=> dispatch(startChangeItem(product._id, 'inc'))}>+</button>
-                    <button className='btn btn-primary p-2' style={{marginLeft:'1px'}}          onClick={()=> dispatch(startChangeItem(product._id, 'delete'))}>x</button>
+                    <button className='btn btn-primary p-2' onClick={() => dispatch(startChangeItem(product._id, 'dec'))} disabled={item.quantity === 1}>-</button>
+                    <h5 className="inline-block">{item.quantity}</h5>
+                    <button className='btn btn-primary p-2' onClick={() => dispatch(startChangeItem(product._id, 'inc'))}>+</button>
+                    <button className='btn btn-primary p-2' style={{ marginLeft: '1px' }} onClick={() => dispatch(startChangeItem(product._id, 'delete'))}>x</button>
                 </>
             )
         } else {
@@ -79,7 +79,7 @@ export default function ProductCoursel({ products, category }) {
 
 
     return (
-        <div>
+        <div className="my-4">
             <h3 className="offset-md-1">{category}</h3>
             <Container fluid className="my-2">
                 {products.length > 0 && (

@@ -7,6 +7,8 @@ import { useNavigate, Link } from "react-router-dom";
 export default function Registration() {
     const navigate = useNavigate()
     const [serverErrors, setServerErrors] = useState([])
+
+    //use formik and yup for dynamic form
     return (
         <Formik
             initialValues={{
@@ -62,8 +64,9 @@ export default function Registration() {
                     }
                 }
                 try {
-                    // const response = await axios.post("https://resortifybackend.onrender.com/api/users", values)
-                    // navigate('/login')
+                    const response = await axios.post("https://resortifybackend.onrender.com/api/users", values)
+                    alert('Registration Successful')
+                    navigate('/login')
                     console.log(formData)
                 } catch (err) {
                     console.log(err)

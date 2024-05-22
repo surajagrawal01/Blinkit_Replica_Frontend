@@ -1,0 +1,12 @@
+.link-style {
+    color: inherit;
+    text-decoration: none;
+}
+
+.carousel-control-prev {
+    left: -2%; /* Move the arrow further left */
+  }
+  
+.carousel-control-next {
+    right: -2%; /* Move the arrow further right */
+  }

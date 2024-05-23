@@ -13,13 +13,13 @@ State management using Redux
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/Resortify-Frontend.git
+   git clone https://github.com/surajagrawal01/Blinkit_Replica_Frontend.git
 
 
 2. Install Dependencies
 
    ```bash
-      cd Resortify-Frontend
+      cd Blinkit_Replica_Frontend
       npm install
 
 3. Start the development server

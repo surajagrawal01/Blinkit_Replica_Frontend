@@ -8,7 +8,7 @@ export default function Registration() {
     const navigate = useNavigate()
     const [serverErrors, setServerErrors] = useState([])
 
-    //use formik and yup for dynamic form
+    //use formik and yup for interactive form and real time validatio
     return (
         <Formik
             initialValues={{
@@ -46,7 +46,6 @@ export default function Registration() {
                         .min(8, 'min 8 characters')
                         .max(128, 'min 128 characters')
                         .required('Required')
-                        .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\s])/, 'At least one Capital Letter, small letter, digit and symbol'),
                 })}
             onSubmit={async (values) => {
                 const formData = {
@@ -64,17 +63,16 @@ export default function Registration() {
                     }
                 }
                 try {
-                    const response = await axios.post("https://resortifybackend.onrender.com/api/users", values)
+                    console.log(formData)
+                    const response = await axios.post("http://localhost:3090/api/users", formData)
                     alert('Registration Successful')
                     navigate('/login')
-                    console.log(formData)
                 } catch (err) {
                     console.log(err)
                     setServerErrors(err.response.data.errors)
                 }
             }}
         >
-
             <>
                 <Container fluid className="my-4">
                     <Row>
@@ -83,7 +81,16 @@ export default function Registration() {
                                 <Card.Body>
 
                                     <Card.Title > Registration Form </Card.Title> <hr />
-                                    
+
+                                    {/* to handle server errors */}
+                                    {
+                                        serverErrors.length > 0 && <div>
+                                            {serverErrors.map((ele, i) => {
+                                                return <div key={i} className='text-danger'>**{ele.msg}</div>
+                                            })}
+                                        </div>
+                                    }
+
                                     <Form className='form-control'>
                                         <label className="form-label" htmlFor="name">Name</label>
                                         <Field className="form-control" name="name" type="text" id="name" />

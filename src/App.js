@@ -1,54 +1,76 @@
+import React from "react"
 import { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios"
+import { RotatingLines } from "react-loader-spinner";
+
+//components
 import HomePage from "./Components/HomePage";
 import Login from "./Components/Login";
 import NavbarComponent from "./Components/Nav";
-import { Routes, Route } from "react-router-dom"
 import Registration from "./Components/Registration";
-import { useSelector, useDispatch } from "react-redux";
-import { RotatingLines } from "react-loader-spinner";
+
+
+//action creator
 import { startSetUser } from "./actions/userAction";
-import Cart from "./Components/Cart";
-import axios from "axios"
+
+//lazy loading implementaion 
+const CartLazy = React.lazy(() => import("./Components/Cart"));
+
+
 export default function App() {
 
     const [products, setProducts] = useState([])
     const [categories, setCategories] = useState([])
-
-    useEffect(()=>{
-        (async()=>{
-            try{
-                const response = await axios.get("http://localhost:3090/api/products")
-                setProducts(response.data)
-            }catch(err){
-                console.log(err)
-                alert(err.message)
-            }
-        })();
-        (async()=>{
-            try{
-                const response = await axios.get("http://localhost:3090/api/categories")
-                setCategories(response.data)
-            }catch(err){
-                console.log(err)
-                alert(err.message)
-            }
-        })();
-    },[])
-
+    const [precipitation, setPrecipitation] = useState({value:false, count : 0})
     const dispatch = useDispatch()
 
+
     useEffect(() => {
+        //to get the details of products and categories
+        Promise.all([axios.get('http://localhost:3090/api/products'), axios.get('http://localhost:3090/api/categories')])
+            .then((response) => {
+                const [{ data: products }, { data: categories }] = response
+                setProducts(products)
+                setCategories(categories)
+            })
+            .catch((err) => {
+                alert(err.message)
+            });
+
+        //to check user logged in or not
         if (localStorage.getItem('token')) {
             dispatch(startSetUser())
-        }
-    },[])
+        };
+    }, [])
 
-    const user = useSelector((state)=>{
+    //to access the user detail
+    const user = useSelector((state) => {
         return state.user.user
     })
 
+    useEffect(() => {
+        if(Object.keys(user).length > 0 && precipitation.count === 0){
+            (async () => {
+                try {
+                    const url = `http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?q=${Number(user?.geoLocation.lat)},${Number(user?.geoLocation.lng)}
+                                &apikey=${process.env.REACT_APP_ACU_WEATHER_API}`
+                    const response = await axios.get(url)
+                    const response2 = await axios.get(`http://dataservice.accuweather.com/currentconditions/v1/${response.data.Key}?apikey=${process.env.REACT_APP_ACU_WEATHER_API}`)
+                    setPrecipitation({value: response2.data[0].HasPrecipitation, count : 1})
+                    console.log(response2.data[0].HasPrecipitation)
+                } catch (err) {
+                    console.log(err)
+                    alert(err.message)
+                }
+            })();
+        }
+    },[user])
+
     const token = localStorage.getItem('token')
 
+    //loader 
     const spinner = (
         <div
             style={{
@@ -71,6 +93,7 @@ export default function App() {
             />
         </div>
     );
+
     return (
         <>
             {!Object.keys(user).length > 0 && token ? (
@@ -84,7 +107,11 @@ export default function App() {
                         <Route path="/" element={<HomePage products={products} categories={categories} />} />
                         <Route path="/registration" element={<Registration />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/cart" element={<Cart products={products}/>} />
+                        {/* Lazy loading implementation */}
+                        <Route path="/cart" element={
+                            <React.Suspense fallback={spinner}>
+                                <CartLazy products={products} precipitation={precipitation} />
+                            </React.Suspense>} />
                     </Routes>
                 </>
             )}

@@ -72,3 +72,24 @@ const changeItem = (data)=>{
         payload:data
     }
 }
+
+export const startClearBooking = ()=>{
+    return (async (dispatch) => {
+        try {
+            const response = await axios.put(`http://localhost:3090/api/cart-items/clear`,{},{
+                headers: {
+                    Authorization: localStorage.getItem('token')
+                }
+            })
+            dispatch(clearCart())
+        } catch (err) {
+            console.log(err)
+        }
+    })
+}
+
+const clearCart = ()=>{
+    return {
+        type:'CLEAR_CART'
+    }
+}

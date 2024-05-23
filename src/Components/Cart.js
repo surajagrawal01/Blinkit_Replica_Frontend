@@ -1,9 +1,15 @@
 import { useEffect, useMemo } from "react"
-import { Row, Col, Card, Image, Button } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux";
-import { startChangeItem } from "../actions/userAction";
 import { LiaRupeeSignSolid } from "react-icons/lia";
-export default function Cart({ products }) {
+import { Row, Col, Card, Image, Button } from "react-bootstrap"
+
+//action creator
+import { startChangeItem, startClearBooking } from "../actions/userAction";
+
+//image importing
+import img1 from "../images/empty-cart.jpg"
+
+export default function Cart({ products, precipitation }) {
 
     const dispatch = useDispatch()
 
@@ -13,17 +19,7 @@ export default function Cart({ products }) {
     })
 
     useEffect(() => {
-        // (async()=>{
-        //     try{
-        //         const url = `http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?q=${Number(user.geoLocation.lat)},${Number(user.geoLocation.lng)}&apikey=${process.env.REACT_APP_ACU_WEATHER_API}`
-        //         const response = await axios.get(url)
-        //         const response2 = await axios.get(`http://dataservice.accuweather.com/currentconditions/v1/${response.data.Key}?apikey=${process.env.REACT_APP_ACU_WEATHER_API}`)
-        //         console.log(response2)
-        //     }catch(err){
-        //         console.log(err)
-        //         alert(err.message)
-        //     }
-        // })();
+
     }, [])
 
     //to get the each product details
@@ -37,10 +33,10 @@ export default function Cart({ products }) {
     const handleButton = (product) => {
         return (
             <>
-                <button className='btn btn-primary p-2' onClick={() => dispatch(startChangeItem(product.productId, 'dec'))} disabled={product.quantity === 1}>-</button>
+                <button className='btn btn-primary px-2' onClick={() => dispatch(startChangeItem(product.productId, 'dec'))} disabled={product.quantity === 1}>-</button>
                 <h5 className="inline-block">{product.quantity}</h5>
-                <button className='btn btn-primary p-2' onClick={() => dispatch(startChangeItem(product.productId, 'inc'))}>+</button>
-                <button className='btn btn-primary p-2' style={{ marginLeft: '1px' }} onClick={() => dispatch(startChangeItem(product.productId, 'delete'))}>x</button>
+                <button className='btn btn-primary px-2' onClick={() => dispatch(startChangeItem(product.productId, 'inc'))}>+</button>
+                <button className='btn btn-primary px-2' style={{ marginLeft: '1px' }} onClick={() => dispatch(startChangeItem(product.productId, 'delete'))}>x</button>
             </>
         )
     }
@@ -55,10 +51,23 @@ export default function Cart({ products }) {
     }, [user.cartItems])
 
     //to calculate the delivery amount
-    const deliveryAmount = useMemo(()=>{
+    const deliveryAmount = useMemo(() => {
         return Number(calculateAmount) * 0.10
-    },[calculateAmount])
+    }, [calculateAmount])
 
+
+    //additional amount because of precipitation
+    const additionalAmount = useMemo(() => {
+        return Number(calculateAmount) * 0.05
+    }, [precipitation])
+
+    //handleBooking
+    const handleBooking = () => {
+        alert('Booking Done')
+        dispatch(startClearBooking())
+    }
+
+    //to handle the minimum no of item and min amount
 
     return (
         <>
@@ -88,8 +97,8 @@ export default function Cart({ products }) {
                                                             alt="photo"
                                                         /></Col>
                                                         <Col className="m-auto">
-                                                            {productItem(ele.productId)?.name} <br />
-                                                            Rs: {productItem(ele.productId)?.price * ele.quantity}<br />
+                                                            <h5 className="inline-block">{productItem(ele.productId)?.name}</h5> <br />
+                                                            <h5 className="inline-block">Rs: {productItem(ele.productId)?.price * ele.quantity}</h5><br />
                                                             {handleButton(ele)}
                                                         </Col>
                                                     </Row>
@@ -114,18 +123,25 @@ export default function Cart({ products }) {
                                     <Card className="my-3" style={{ height: '13rem' }}>
                                         <Row className="offset-md-2 m-auto">
                                             <h5> Cart Amount : <span className="offset-md-4"><LiaRupeeSignSolid /> {calculateAmount}</span> </h5>
-                                            <h5> Delivery Charges : <span className="offset-md-3"><LiaRupeeSignSolid /> {deliveryAmount}</span> </h5>
+                                            <h5> Delivery charges : <span className="offset-md-3"><LiaRupeeSignSolid /> {deliveryAmount}</span> </h5>
+                                            {precipitation.value && <h5 className="red-info"> Additional (*due to rain) : <span className="offset-md-1"><LiaRupeeSignSolid /> {additionalAmount}</span> </h5>}
                                             <hr />
-                                            <h5> Total Amount : <span className="offset-md-4"><LiaRupeeSignSolid /> {calculateAmount + deliveryAmount}</span> </h5><br />
+                                            <h5> Total Amount : <span className="offset-md-4"> <LiaRupeeSignSolid />
+                                                {precipitation.value ? (calculateAmount + deliveryAmount + additionalAmount) : (calculateAmount + deliveryAmount) }
+                                            </span> </h5><br />
                                         </Row>
-                                            <Button>Book</Button>
+                                        {calculateAmount < 200 && <p className="red-info inline-block mx-auto" >**total amount should be greater than 200</p> }
+                                        <Button onClick={handleBooking} disabled={calculateAmount < 200}>Book</Button>
                                     </Card>
                                 </Card.Body>
                             </Card>
                         </Row >
                     </Col>
                 </Row>
-            </> : <> No items in the cart</>}
+            </> : <>
+                <div className="offset-md-3 col-6">
+                    <img alt="image" src={img1} style={{ maxWidth: '100%' }} />
+                </div></>}
         </>
     )
 }

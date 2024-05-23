@@ -17,6 +17,9 @@ export default function userReducer(state= initialState, action){
         case 'CHANGE_ITEM':{
             return {...state, user : {...state.user , cartItems: [...action.payload]}}
         }
+        case 'CLEAR_CART':{
+            return {...state, user : {...state.user , cartItems: []}}
+        }
         default:{
             return state
         }

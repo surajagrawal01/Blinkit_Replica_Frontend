@@ -1,4 +1,6 @@
 import axios from "axios"
+
+//to get the user information once login
 export const startSetUser = () => {
     return (async (dispatch) => {
         try {
@@ -14,6 +16,7 @@ export const startSetUser = () => {
     })
 }
 
+//action generator
 const setUSer = (data) => {
     return {
         type: 'SET_USER',
@@ -21,12 +24,14 @@ const setUSer = (data) => {
     }
 }
 
+//to clear user data once logout
 export const clearUserData = () => {
     return {
         type: 'CLEAR_USER'
     }
 }
 
+//to add item in the cart
 export const startAddItem = (product) => {
     return (async (dispatch) => {
         try {
@@ -35,10 +40,14 @@ export const startAddItem = (product) => {
                     Authorization: localStorage.getItem('token')
                 }
             })
-            console.log(response.data)
             dispatch(addItem(response.data))
         } catch (err) {
-            console.log(err)
+            //to handle item deleted
+            if(err.response.status == 404){
+                alert('Oops! Sorry, product not available')
+                return;
+            }
+            alert(err.message)
         }
     })
 }
@@ -50,6 +59,7 @@ const addItem = (product)=>{
     }
 }
 
+//to update the item quantity
 export const startChangeItem = (id, type) => {
     return (async (dispatch) => {
         try {
@@ -58,10 +68,15 @@ export const startChangeItem = (id, type) => {
                     Authorization: localStorage.getItem('token')
                 }
             })
-            console.log(response.data, 'change item')
             dispatch(changeItem(response.data))
         } catch (err) {
-            console.log(err)
+            //to handle item deleted
+            if(err.response.status == 404){
+                alert('Oops! Sorry, product not available')
+                dispatch(itemDeleted(id))
+                return;
+            }
+            alert(err.message)
         }
     })
 }
@@ -73,7 +88,16 @@ const changeItem = (data)=>{
     }
 }
 
-export const startClearBooking = ()=>{
+//to handle deleted item
+const itemDeleted = (id)=>{
+    return {
+        type: 'ITEM_DELETED',
+        payload: id
+    }
+} 
+
+//to clear cart once order done
+export const startClearCart = ()=>{
     return (async (dispatch) => {
         try {
             const response = await axios.put(`http://localhost:3090/api/cart-items/clear`,{},{

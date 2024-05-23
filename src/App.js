@@ -50,16 +50,20 @@ export default function App() {
         return state.user.user
     })
 
+    //to get the real time information of weather using accu weather apis
     useEffect(() => {
+        //to handle only one time api call when user login 
         if(Object.keys(user).length > 0 && precipitation.count === 0){
             (async () => {
                 try {
                     const url = `http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?q=${Number(user?.geoLocation.lat)},${Number(user?.geoLocation.lng)}
                                 &apikey=${process.env.REACT_APP_ACU_WEATHER_API}`
+                    //for location key using user lattitude and longitude
                     const response = await axios.get(url)
+
+                    //for real time information about precipation and updating state
                     const response2 = await axios.get(`http://dataservice.accuweather.com/currentconditions/v1/${response.data.Key}?apikey=${process.env.REACT_APP_ACU_WEATHER_API}`)
                     setPrecipitation({value: response2.data[0].HasPrecipitation, count : 1})
-                    console.log(response2.data[0].HasPrecipitation)
                 } catch (err) {
                     console.log(err)
                     alert(err.message)
@@ -72,14 +76,7 @@ export default function App() {
 
     //loader 
     const spinner = (
-        <div
-            style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-            }}
-        >
+        <div className="spinner-style">
             <RotatingLines
                 visible={true}
                 height="96"

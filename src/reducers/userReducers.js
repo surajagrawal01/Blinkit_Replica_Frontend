@@ -5,7 +5,6 @@ const initialState = {
 export default function userReducer(state= initialState, action){
     switch(action.type){
         case 'SET_USER':{
-            console.log(action.payload)
             return {...state, user: {...action.payload}}
         }
         case 'CLEAR_USER':{
@@ -19,6 +18,11 @@ export default function userReducer(state= initialState, action){
         }
         case 'CLEAR_CART':{
             return {...state, user : {...state.user , cartItems: []}}
+        }
+        case 'ITEM_DELETED':{
+            return {...state, user: {...state.user, cartItems: state.user.cartItems.filter((ele)=>{
+                return ele.productId !== action.payload
+            })}}
         }
         default:{
             return state

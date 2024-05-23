@@ -29,11 +29,11 @@ function NavbarComponent() {
   return (
     <Navbar bg="primary" data-bs-theme="dark">
       <Container>
-        <Link to="/" className="link-style"><Navbar.Brand href="/">Blinkit</Navbar.Brand></Link>
+        <Link to="/" className="link-style"><Navbar.Brand>Blinkit</Navbar.Brand></Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Link to="/" className="link-style"><Nav.Link href="/">Home</Nav.Link></Link>
+            <Link to="/" className="link-style"><Nav.Link>Home</Nav.Link></Link>
           </Nav>
           <Nav className="ms-auto">
 
@@ -46,7 +46,6 @@ function NavbarComponent() {
                   <FaUserCircle /> Login/SignUp{" "}
                 </Link>
               </Nav.Link>}
-
           </Nav>
         </Navbar.Collapse>
       </Container>

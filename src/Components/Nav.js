@@ -1,17 +1,25 @@
-import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-import { FaUserCircle } from "react-icons/fa";
-import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { Container, Nav, Navbar } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+
+//icons
+import { FaUserCircle } from "react-icons/fa";
+import { BsCart3 } from "react-icons/bs";
+
+//action creator
 import { clearUserData } from '../actions/userAction';
+
 function NavbarComponent() {
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  //accessing user data
   const user = useSelector((state) => {
     return state.user.user
   })
 
+  //loggin out 
   const handleLogout = () => {
     localStorage.removeItem('token')
     dispatch(clearUserData())
@@ -31,15 +39,10 @@ function NavbarComponent() {
 
             {Object.keys(user).length > 0 ?
               <>
-                <NavDropdown id="basic-nav-dropdown" align="start" title={<FaUserCircle />}>
-                  <Link to="/cart" className='link-style'><NavDropdown.Item href="/cart">Cart</NavDropdown.Item></Link>
-                  <NavDropdown.Divider />
-                  <Link to="/" className='link-style'><NavDropdown.Item onClick={handleLogout}>
-                    Logout
-                  </NavDropdown.Item></Link>
-                </NavDropdown>
+                <Nav.Link><button className='btn btn-light' onClick={() => navigate('/cart')}><BsCart3 /> Cart</button></Nav.Link>
+                <Nav.Link onClick={handleLogout} className='my-1'>Logout</Nav.Link>
               </> : <Nav.Link>
-                <Link to="/registration" className="link-style">
+                <Link to="/login" className="link-style">
                   <FaUserCircle /> Login/SignUp{" "}
                 </Link>
               </Nav.Link>}

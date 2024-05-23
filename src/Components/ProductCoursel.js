@@ -21,7 +21,7 @@ export default function ProductCoursel({ products, category }) {
             } else if (screenWidth < 992) {
                 resortsPerGroup = 4;
             } else {
-                resortsPerGroup = 6;
+                resortsPerGroup = 5;
             }
 
             const newGroupedProducts = [];
@@ -64,10 +64,10 @@ export default function ProductCoursel({ products, category }) {
         if (item) {
             return (
                 <>
-                    <button className='btn btn-primary p-2' onClick={() => dispatch(startChangeItem(product._id, 'dec'))} disabled={item.quantity === 1}>-</button>
+                    <button className='btn btn-primary px-2' onClick={() => dispatch(startChangeItem(product._id, 'dec'))} disabled={item.quantity === 1}>-</button>
                     <h5 className="inline-block">{item.quantity}</h5>
-                    <button className='btn btn-primary p-2' onClick={() => dispatch(startChangeItem(product._id, 'inc'))}>+</button>
-                    <button className='btn btn-primary p-2' style={{ marginLeft: '1px' }} onClick={() => dispatch(startChangeItem(product._id, 'delete'))}>x</button>
+                    <button className='btn btn-primary px-2' onClick={() => dispatch(startChangeItem(product._id, 'inc'))}>+</button>
+                    <button className='btn btn-primary px-2' style={{ marginLeft: '1px' }} onClick={() => dispatch(startChangeItem(product._id, 'delete'))}>x</button>
                 </>
             )
         } else {

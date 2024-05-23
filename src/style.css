@@ -6,3 +6,7 @@
 .inline-block {
   display: inline-block;
 }
+
+.red-info {
+  color: red;
+}

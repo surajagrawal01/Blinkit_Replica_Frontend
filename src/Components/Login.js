@@ -1,10 +1,14 @@
 import { useState } from "react"
-import { Button, Form } from 'react-bootstrap';
-import { useNavigate, Link } from "react-router-dom";
+
+//third party packages 
 import axios from "axios";
-import { Container, Row, Col, Card } from 'react-bootstrap';
 import { useDispatch } from "react-redux";
+import { useNavigate, Link } from "react-router-dom";
+import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
+
+//action creator
 import { startSetUser } from "../actions/userAction";
+
 export default function Login() {
     const [formData, setFormData] = useState({ email: '', password: '' })
     const [formErrors, setFormErrors] = useState({})
@@ -24,7 +28,7 @@ export default function Login() {
         }
     }
 
-    //handle login submit button
+    //handle login button
     const handleSubmit = async (e) => {
         e.preventDefault()
         validateErrors()
@@ -37,6 +41,7 @@ export default function Login() {
                     localStorage.setItem("token", response.data.token)
                 }
                 dispatch(startSetUser())
+                setServerErrors({})
                 navigate("/")
             } catch (err) {
                 console.log(err)
@@ -59,14 +64,10 @@ export default function Login() {
                     <Col xs={12} md={4} className='m-auto'>
                         <Card className='m-auto p-3' border="primary">
                             <Card.Body>
-
                                 <Card.Title > Registration Form </Card.Title> <hr />
+                                {/* to handle server errors */}
                                 {
-                                    serverErrors.length > 0 && <div>
-                                        {serverErrors.map((ele, i) => {
-                                            return <div key={i} className='text-danger'>**{ele.msg}</div>
-                                        })}
-                                    </div>
+                                    serverErrors.error && <div className="text-danger">**{serverErrors.error}</div>
                                 }
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Group className="mb-3" controlId="formBasicEmail">

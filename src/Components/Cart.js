@@ -1,10 +1,11 @@
-import { useEffect, useMemo } from "react"
+import {  useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { LiaRupeeSignSolid } from "react-icons/lia";
 import { Row, Col, Card, Image, Button } from "react-bootstrap"
+import { useNavigate } from "react-router-dom";
 
 //action creator
-import { startChangeItem, startClearBooking } from "../actions/userAction";
+import { startChangeItem, startClearCart } from "../actions/userAction";
 
 //image importing
 import img1 from "../images/empty-cart.jpg"
@@ -12,21 +13,19 @@ import img1 from "../images/empty-cart.jpg"
 export default function Cart({ products, precipitation }) {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     //accessing the user information from store
     const user = useSelector((state) => {
         return state.user.user
     })
 
-    useEffect(() => {
-
-    }, [])
-
     //to get the each product details
     const productItem = (productId) => {
-        return products.find((ele) => {
+        const product = products.find((ele) => {
             return ele._id == productId
         })
+        return product
     }
 
     //to handle the item change in the cart
@@ -64,10 +63,9 @@ export default function Cart({ products, precipitation }) {
     //handleBooking
     const handleBooking = () => {
         alert('Booking Done')
-        dispatch(startClearBooking())
+        dispatch(startClearCart())
+        navigate("/")
     }
-
-    //to handle the minimum no of item and min amount
 
     return (
         <>
@@ -86,9 +84,9 @@ export default function Cart({ products, precipitation }) {
                                     {
                                         user.cartItems.map((ele) => {
                                             return (
-                                                <Card key={ele._id} className="my-3">
-                                                    <Row className="my-4">
-                                                        <Col className="m-auto"><Image
+                                                <Card key={ele.productId} className="my-3">
+                                                    <Row className="my-4 mx-auto">
+                                                        <Col className="m-auto" ><Image
                                                             style={{
                                                                 width: "50%",
                                                                 height: "30%",
@@ -110,34 +108,36 @@ export default function Cart({ products, precipitation }) {
                             </Card>
                         </Row >
                     </Col>
-                    <Col xs={12} md={4} className="my-6">
-                        <Row xs={12} md={12} className='m-auto'>
-                            <Card className='m-auto p-3 border-0' border="info">
-                                <Row xs={12} md={10}>
-                                    <Card.Title>
-                                        Bill Details
-                                    </Card.Title>
-                                    <hr />
-                                </Row>
-                                <Card.Body>
-                                    <Card className="my-3" style={{ height: '13rem' }}>
-                                        <Row className="offset-md-2 m-auto">
-                                            <h5> Cart Amount : <span className="offset-md-4"><LiaRupeeSignSolid /> {calculateAmount}</span> </h5>
-                                            <h5> Delivery charges : <span className="offset-md-3"><LiaRupeeSignSolid /> {deliveryAmount}</span> </h5>
-                                            {precipitation.value && <h5 className="red-info"> Additional (*due to rain) : <span className="offset-md-1"><LiaRupeeSignSolid /> {additionalAmount}</span> </h5>}
-                                            <hr />
-                                            <h5> Total Amount : <span className="offset-md-4"> <LiaRupeeSignSolid />
-                                                {precipitation.value ? (calculateAmount + deliveryAmount + additionalAmount) : (calculateAmount + deliveryAmount) }
-                                            </span> </h5><br />
-                                        </Row>
-                                        {calculateAmount < 200 && <p className="red-info inline-block mx-auto" >**total amount should be greater than 200</p> }
-                                        <Button onClick={handleBooking} disabled={calculateAmount < 200}>Book</Button>
-                                    </Card>
-                                </Card.Body>
-                            </Card>
-                        </Row >
-                    </Col>
+                    {products.length > 0 &&
+                        <Col xs={12} md={4} className="my-6">
+                            <Row xs={12} md={12} className='m-auto'>
+                                <Card className='m-auto p-3 border-0' border="info">
+                                    <Row xs={12} md={10}>
+                                        <Card.Title>
+                                            Bill Details
+                                        </Card.Title>
+                                        <hr />
+                                    </Row>
+                                    <Card.Body>
+                                        <Card className="my-3" style={{ height: '13rem' }}>
+                                            <Row className="offset-md-2 m-auto">
+                                                <h5> Cart Amount : <span className="offset-md-4"><LiaRupeeSignSolid /> {calculateAmount}</span> </h5>
+                                                <h5> Delivery charges : <span className="offset-md-3"><LiaRupeeSignSolid /> {deliveryAmount}</span> </h5>
+                                                {precipitation.value && <h5 className="red-info"> Additional (*due to rain) : <span className="offset-md-1"><LiaRupeeSignSolid /> {additionalAmount}</span> </h5>}
+                                                <hr />
+                                                <h5> Total Amount : <span className="offset-md-4"> <LiaRupeeSignSolid />
+                                                    {precipitation.value ? (calculateAmount + deliveryAmount + additionalAmount) : (calculateAmount + deliveryAmount)}
+                                                </span> </h5><br />
+                                            </Row>
+                                            {calculateAmount < 200 && <p className="red-info inline-block mx-auto" >**cart amount should be greater than 200</p>}
+                                            <Button onClick={handleBooking} disabled={calculateAmount < 200}>Book</Button>
+                                        </Card>
+                                    </Card.Body>
+                                </Card>
+                            </Row >
+                        </Col>}
                 </Row>
+
             </> : <>
                 <div className="offset-md-3 col-6">
                     <img alt="image" src={img1} style={{ maxWidth: '100%' }} />

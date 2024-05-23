@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Row, Col, Container, Card, Image, Carousel } from "react-bootstrap";
 // import { useNavigate } from "react-router-dom";
 import { FaIndianRupeeSign } from "react-icons/fa6";
@@ -13,6 +12,7 @@ export default function ProductCoursel({ products, category }) {
     const navigate = useNavigate()
 
     useEffect(() => {
+        //to handle the responsiveness of image corusel
         function updateGroupedProducts() {
             const screenWidth = window.innerWidth;
             let resortsPerGroup;
@@ -53,6 +53,7 @@ export default function ProductCoursel({ products, category }) {
             item = cartItems.find((ele) => ele.productId === product._id)
         }
 
+        //if user login then only add item else navigate to login page
         const handleClick = () => {
             if (!localStorage.getItem('token')) {
                 navigate("/login")
@@ -60,7 +61,8 @@ export default function ProductCoursel({ products, category }) {
             }
             dispatch(startAddItem(product))
         }
-        //checking here the toal no of particular product booked 
+
+        //checking here the toal no of particular product added in the cart 
         if (item) {
             return (
                 <>
